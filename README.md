@@ -9,8 +9,10 @@ This activity will help to reinforce learning of the Module 4 concepts of:
 
 ## Author
 
-[Your name]
+Anannya
 
 ## Additional Information
 
-[ Use this space to include additional information that may help in your learning. ]
+[1Event Handling: Connected button clicks to private methods using signals and slots.
+2. Input Validation: Checked that name and phone are entered before adding a contact.
+3. Status Updates: Updated QLabel to show messages when contacts are added or removed.]
