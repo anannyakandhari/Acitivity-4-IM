@@ -4,20 +4,23 @@ __author__ = "ACE Faculty"
 __version__ = "1.0.0"
 __credits__ = ""
 
-from PySide6.QtWidgets import  QMainWindow, QLineEdit, QPushButton, QTableWidget, QLabel, QVBoxLayout, QWidget, QTableWidgetItem
+from PySide6.QtWidgets import QMainWindow, QLineEdit, QPushButton, QTableWidget, QLabel, QVBoxLayout, QWidget, QTableWidgetItem
+from PySide6.QtCore import Slot
 
 class ContactList(QMainWindow):
     """Represents a window that provides the UI to manage contacts."""
 
     def __init__(self):
         """Initializes a new instance of the ContactList class."""
-
         super().__init__()
         self.__initialize_widgets()      
 
+        # Connect buttons to methods
+        self.add_button.clicked.connect(self.__on_add_contact)
+        self.remove_button.clicked.connect(self.__on_remove_contact)
+
     def __initialize_widgets(self):
         """Initializes the widgets on this Window.
-        
         DO NOT EDIT.
         """
         self.setWindowTitle("Contact List")
@@ -48,3 +51,47 @@ class ContactList(QMainWindow):
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
+
+    @Slot()
+    def __on_add_contact(self):
+        """Runs when Add Contact button is clicked."""
+        name = self.contact_name_input.text().strip()
+        phone = self.phone_input.text().strip()
+
+        if len(name) > 0 and len(phone) > 0:
+            row_position = self.contact_table.rowCount()
+            self.contact_table.insertRow(row_position)
+
+            name_item = QTableWidgetItem(name)
+            phone_item = QTableWidgetItem(phone)
+
+            self.contact_table.setItem(row_position, 0, name_item)
+            self.contact_table.setItem(row_position, 1, phone_item)
+
+            self.status_label.setText(f"Added contact: {name}")
+            self.contact_name_input.clear()
+            self.phone_input.clear()
+        else:
+            self.status_label.setText("Please enter a contact name and phone number.")
+
+    @Slot()
+    def __on_remove_contact(self):
+        """Runs when Remove Contact button is clicked."""
+        row = self.contact_table.currentRow()
+
+        if row >= 0:
+            reply = QMessageBox.question(
+                self,
+                "Remove Contact",
+                "Are you sure you want to remove this contact?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+
+            if reply == QMessageBox.Yes:
+                self.contact_table.removeRow(row)
+                self.status_label.setText("Contact removed.")
+            else:
+                self.status_label.setText("Contact not removed.")
+        else:
+            self.status_label.setText("Please select a row to be removed.")
